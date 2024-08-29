@@ -11,6 +11,10 @@ import android.content.Context
 import androidx.room.Room
 import coil.ImageLoader
 import coil.request.ImageRequest
+import com.dot.gallery.ai.AISearchEngine
+import com.dot.gallery.ai.ApplicationEntryPoint
+import com.dot.gallery.ai.ApplicationEntryPointImpl
+import com.dot.gallery.core.SearchEngine
 import com.dot.gallery.feature_node.data.data_source.InternalDatabase
 import com.dot.gallery.feature_node.data.repository.MediaRepositoryImpl
 import com.dot.gallery.feature_node.domain.repository.MediaRepository
@@ -61,4 +65,15 @@ object AppModule {
     fun getImageRequest(@ApplicationContext context: Context): ImageRequest.Builder =
         ImageRequest.Builder(context)
 
+    @Provides
+    fun provideApplicationEntryPoint(application: Application): ApplicationEntryPoint {
+        return ApplicationEntryPointImpl(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchEngine(application: Application): SearchEngine {
+        val ai_search = AISearchEngine(application)
+        return SearchEngine(ai_search)
+    }
 }

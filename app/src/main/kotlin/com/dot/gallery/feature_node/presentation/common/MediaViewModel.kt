@@ -6,15 +6,17 @@
 package com.dot.gallery.feature_node.presentation.common
 
 import android.annotation.SuppressLint
+import android.app.Application
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.dot.gallery.core.MediaState
 import com.dot.gallery.core.Resource
+import com.dot.gallery.core.SearchEngine
 import com.dot.gallery.feature_node.domain.model.Media
 import com.dot.gallery.feature_node.domain.use_case.MediaUseCases
 import com.dot.gallery.feature_node.presentation.util.RepeatOnResume
@@ -28,14 +30,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.xdrop.fuzzywuzzy.FuzzySearch
 import javax.inject.Inject
 
 @HiltViewModel
 open class MediaViewModel @Inject constructor(
+    application: Application,
+    private val searchEngine: SearchEngine,
     private val mediaUseCases: MediaUseCases
-) : ViewModel() {
+) : AndroidViewModel(application) {
 
+    var imageQuery : MutableStateFlow<Media> = MutableStateFlow(Media(-1L, "", android.net.Uri.parse(""), "", "", -1, "", 0L, 0, 0, "", "", -1, -1))
     var lastQuery = mutableStateOf("")
         private set
     val multiSelectState = mutableStateOf(false)
@@ -75,7 +79,20 @@ open class MediaViewModel @Inject constructor(
         return withContext(Dispatchers.IO) {
             if (query.isEmpty())
                 return@withContext emptyList()
-            val matches = FuzzySearch.extractSorted(query, this@parseQuery, { it.toString() }, 60)
+
+            val matches = searchEngine.search(query, this@parseQuery)
+
+            return@withContext matches.map { it.referent }.ifEmpty { emptyList() }
+        }
+    }
+
+    private suspend fun List<Media>.parseImageQuery(query: Media): List<Media> {
+        return withContext(Dispatchers.IO) {
+            if (query.id == -1L)
+                return@withContext emptyList()
+
+            val matches = searchEngine.searchByImage(query, this@parseImageQuery)
+
             return@withContext matches.map { it.referent }.ifEmpty { emptyList() }
         }
     }
@@ -166,6 +183,26 @@ open class MediaViewModel @Inject constructor(
                 _searchMediaState.tryEmit(MediaState(isLoading = true))
                 return@launch _searchMediaState.collectMedia(
                     data = mediaState.value.media.parseQuery(query),
+                    error = mediaState.value.error,
+                    albumId = albumId,
+                    groupByMonth = groupByMonth
+                )
+            }
+        }
+    }
+
+    fun queryImage(query: Media) {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                imageQuery.value = query
+            }
+            if (query.id == -1L) {
+                _searchMediaState.tryEmit(MediaState(isLoading = false))
+                return@launch
+            } else {
+                _searchMediaState.tryEmit(MediaState(isLoading = true))
+                return@launch _searchMediaState.collectMedia(
+                    data = mediaState.value.media.parseImageQuery(query),
                     error = mediaState.value.error,
                     albumId = albumId,
                     groupByMonth = groupByMonth

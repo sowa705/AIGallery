@@ -42,6 +42,7 @@ import androidx.compose.material.icons.outlined.CopyAll
 import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -87,6 +88,7 @@ import com.dot.gallery.core.Constants.DEFAULT_TOP_BAR_ANIMATION_DURATION
 import com.dot.gallery.core.presentation.components.DragHandle
 import com.dot.gallery.feature_node.domain.model.Media
 import com.dot.gallery.feature_node.domain.use_case.MediaHandleUseCase
+import com.dot.gallery.feature_node.presentation.common.MediaViewModel
 import com.dot.gallery.feature_node.presentation.exif.CopyMediaSheet
 import com.dot.gallery.feature_node.presentation.exif.MetadataEditSheet
 import com.dot.gallery.feature_node.presentation.exif.MoveMediaSheet
@@ -95,6 +97,7 @@ import com.dot.gallery.feature_node.presentation.trashed.components.TrashDialogA
 import com.dot.gallery.feature_node.presentation.util.AppBottomSheetState
 import com.dot.gallery.feature_node.presentation.util.ExifMetadata
 import com.dot.gallery.feature_node.presentation.util.MapBoxURL
+import com.dot.gallery.feature_node.presentation.util.Screen
 import com.dot.gallery.feature_node.presentation.util.connectivityState
 import com.dot.gallery.feature_node.presentation.util.formattedAddress
 import com.dot.gallery.feature_node.presentation.util.getDate
@@ -109,6 +112,7 @@ import com.dot.gallery.feature_node.presentation.util.rememberExifInterface
 import com.dot.gallery.feature_node.presentation.util.rememberExifMetadata
 import com.dot.gallery.feature_node.presentation.util.rememberGeocoder
 import com.dot.gallery.feature_node.presentation.util.rememberMediaInfo
+import com.dot.gallery.feature_node.presentation.util.searchByImage
 import com.dot.gallery.feature_node.presentation.util.shareMedia
 import com.dot.gallery.ui.theme.BlackScrim
 import com.dot.gallery.ui.theme.Shapes
@@ -124,6 +128,7 @@ fun BoxScope.MediaViewBottomBar(
     showUI: Boolean,
     paddingValues: PaddingValues,
     currentMedia: Media?,
+    mediaViewModel: MediaViewModel?,
     currentIndex: Int = 0,
     onDeleteMedia: ((Int) -> Unit)? = null,
 ) {
@@ -156,6 +161,7 @@ fun BoxScope.MediaViewBottomBar(
                 MediaViewActions(
                     currentIndex = currentIndex,
                     currentMedia = it,
+                    mediaViewModel = mediaViewModel,
                     handler = handler,
                     onDeleteMedia = onDeleteMedia,
                     showDeleteButton = showDeleteButton
@@ -479,6 +485,7 @@ private fun MediaViewInfoActions(
 private fun MediaViewActions(
     currentIndex: Int,
     currentMedia: Media,
+    mediaViewModel: MediaViewModel?,
     handler: MediaHandleUseCase,
     onDeleteMedia: ((Int) -> Unit)?,
     showDeleteButton: Boolean
@@ -489,6 +496,8 @@ private fun MediaViewActions(
     FavoriteButton(currentMedia, handler)
     // Edit
     EditButton(currentMedia)
+    // Edit
+    SearchByImage(currentMedia, mediaViewModel)
     // Trash Component
     if (showDeleteButton) {
         TrashButton(currentIndex, currentMedia, handler, false, onDeleteMedia)
@@ -572,6 +581,25 @@ private fun ShareButton(
     }
 }
 
+@Composable
+private fun SearchByImage(
+    media: Media,
+    mediaViewModel: MediaViewModel?,
+    followTheme: Boolean = false
+) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    BottomBarColumn(
+        currentMedia = media,
+        imageVector = Icons.Outlined.Search,
+        followTheme = followTheme,
+        title = stringResource(R.string.search_by_image)
+    ) {
+        scope.launch {
+            mediaViewModel?.queryImage(media)
+        }
+    }
+}
 @Composable
 private fun FavoriteButton(
     media: Media,

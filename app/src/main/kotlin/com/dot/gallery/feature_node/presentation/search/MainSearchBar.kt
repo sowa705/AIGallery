@@ -237,6 +237,7 @@ fun MainSearchBar(
                             mediaState = state,
                             paddingValues = pd,
                             canScroll = canScroll,
+                            allowHeaders = false,
                             isScrolling = remember { mutableStateOf(false) }
                         ) {
                             navigate(Screen.MediaViewScreen.route + "?mediaId=${it.id}")

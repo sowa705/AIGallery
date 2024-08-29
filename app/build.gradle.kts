@@ -210,8 +210,11 @@ dependencies {
     androidTestImplementation(platform(libs.compose.bom))
     debugImplementation(libs.compose.ui.tooling)
     debugRuntimeOnly(libs.compose.ui.test.manifest)
-}
 
+    //ai
+    implementation(libs.onnxruntime)
+    implementation(libs.gson)
+}
 fun getApiKey(): String {
     val fl = rootProject.file("api.properties")
 

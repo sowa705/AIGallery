@@ -34,6 +34,7 @@ import com.dot.gallery.core.Constants.Animation.navigateInAnimation
 import com.dot.gallery.core.Constants.Animation.navigateUpAnimation
 import com.dot.gallery.core.Constants.Target.TARGET_FAVORITES
 import com.dot.gallery.core.Constants.Target.TARGET_TRASH
+import com.dot.gallery.core.SearchEngine
 import com.dot.gallery.core.Settings.Album.rememberHideTimelineOnAlbum
 import com.dot.gallery.core.Settings.Misc.rememberLastScreen
 import com.dot.gallery.core.Settings.Misc.rememberTimelineGroupByMonth
@@ -62,7 +63,8 @@ fun NavigationComp(
     bottomBarState: MutableState<Boolean>,
     systemBarFollowThemeState: MutableState<Boolean>,
     toggleRotate: () -> Unit,
-    isScrolling: MutableState<Boolean>
+    isScrolling: MutableState<Boolean>,
+    searchEngine: SearchEngine
 ) {
     val searchBarActive = rememberSaveable {
         mutableStateOf(false)
@@ -287,6 +289,7 @@ fun NavigationComp(
                 mediaId = mediaId,
                 mediaState = if (albumId != -1L) timelineViewModel.customMediaState else timelineViewModel.mediaState,
                 albumsState = albumsViewModel.albumsState,
+                mediaViewModel = timelineViewModel,
                 handler = timelineViewModel.handler
             )
         }
@@ -336,6 +339,7 @@ fun NavigationComp(
                 target = target,
                 mediaState = if (target == TARGET_FAVORITES) viewModel.customMediaState else viewModel.mediaState,
                 albumsState = albumsViewModel.albumsState,
+                mediaViewModel = viewModel,
                 handler = viewModel.handler
             )
         }
@@ -344,7 +348,8 @@ fun NavigationComp(
         ) {
             SettingsScreen(
                 navigateUp = navPipe::navigateUp,
-                navigate = navPipe::navigate
+                navigate = navPipe::navigate,
+                searchEngine = searchEngine
             )
         }
         composable(

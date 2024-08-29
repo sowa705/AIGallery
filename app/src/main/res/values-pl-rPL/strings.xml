@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Galeria</string>
+    <string name="app_name">AI Gallery</string>
     <string name="nav_albums">Albumy</string>
     <string name="searchbar_title"><![CDATA[Szukaj zdjęć lub filmów]]></string>
     <string name="header_today">Dzisiaj</string>
@@ -53,7 +53,7 @@
     <string name="location_cd">Lokalizacja nośników</string>
     <string name="location_map_cd">Mapa lokalizacji</string>
     <string name="app_dev">przez %s</string>
-    <string name="app_dev_name">IacobIonut01</string>
+    <string name="app_dev_name">Łukasz Sowa, IacobIonut01</string>
     <string name="donate">Wesprzyj</string>
     <string name="github">Github</string>
     <string name="donate_button_cd">Przycisk wsparcia</string>
@@ -159,7 +159,8 @@
     <string name="add_to_ignored_summary">Remove an album from showing inside the Gallery</string>
     <string name="remove_from_ignored">Remove from ignored list</string>
     <string name="remove_from_ignored_summary">Remove from the ignored list the album named %1$s</string>
-    <string name="favorite">Favorite</string>
+    <string name="favorite">Ulubione</string>
+    <string name="search_by_image">Szukaj podobnych</string>
     <plurals name="item_count">
         <item quantity="one">%s pozycja</item>
         <item quantity="few">%s pozycji</item>

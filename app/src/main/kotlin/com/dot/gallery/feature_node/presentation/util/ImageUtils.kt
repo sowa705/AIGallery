@@ -554,6 +554,10 @@ fun Context.shareMedia(media: Media) {
         .startChooser()
 }
 
+fun Context.searchByImage(media: Media) {
+    // go to the main view with image query
+}
+
 fun Context.shareMedia(mediaList: List<Media>) {
     val mimeTypes =
         if (mediaList.find { it.duration != null } != null) {

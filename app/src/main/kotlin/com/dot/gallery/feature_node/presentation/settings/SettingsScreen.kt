@@ -5,6 +5,7 @@
 
 package com.dot.gallery.feature_node.presentation.settings
 
+import android.app.Application
 import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.dot.gallery.R
 import com.dot.gallery.core.Position
+import com.dot.gallery.core.SearchEngine
 import com.dot.gallery.core.Settings
 import com.dot.gallery.core.Settings.Misc.rememberForcedLastScreen
 import com.dot.gallery.core.Settings.Misc.rememberLastScreen
@@ -75,7 +77,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SettingsScreen(
     navigateUp: () -> Unit,
-    navigate: (String) -> Unit
+    navigate: (String) -> Unit,
+    searchEngine: SearchEngine
 ) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -108,7 +111,7 @@ fun SettingsScreen(
                 .fillMaxSize(),
             contentPadding = padding
         ) {
-            item { SettingsAppHeader() }
+            item { SettingsAppHeader(searchEngine) }
             items(
                 items = settingsList,
                 key = { it.title + it.type.toString() }

@@ -27,6 +27,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.dot.gallery.core.SearchEngine
 import com.dot.gallery.core.Settings
 import com.dot.gallery.core.Settings.Misc.getSecureMode
 import com.dot.gallery.core.presentation.components.AppBarContainer
@@ -36,9 +37,13 @@ import com.dot.gallery.ui.theme.GalleryTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var searchEngine: SearchEngine
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +94,8 @@ class MainActivity : ComponentActivity() {
                                 bottomBarState = bottomBarState,
                                 systemBarFollowThemeState = systemBarFollowThemeState,
                                 toggleRotate = ::toggleOrientation,
-                                isScrolling = isScrolling
+                                isScrolling = isScrolling,
+                                searchEngine = searchEngine
                             )
                         }
                     }

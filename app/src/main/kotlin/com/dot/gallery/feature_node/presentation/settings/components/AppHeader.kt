@@ -5,6 +5,7 @@
 
 package com.dot.gallery.feature_node.presentation.settings.components
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,15 +35,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.dot.gallery.BuildConfig
 import com.dot.gallery.R
+import com.dot.gallery.ai.AISearchEngine
+import com.dot.gallery.core.SearchEngine
 import com.dot.gallery.feature_node.presentation.support.SupportSheet
 import com.dot.gallery.feature_node.presentation.util.rememberAppBottomSheetState
 import com.dot.gallery.ui.theme.GalleryTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsAppHeader() {
+fun SettingsAppHeader(searchEngine: SearchEngine) {
 
     val appName = stringResource(id = R.string.app_name)
     val appVersion = remember { "v${BuildConfig.VERSION_NAME}" }
@@ -56,6 +61,10 @@ fun SettingsAppHeader() {
     val githubTitle = stringResource(R.string.github)
     val githubContentDesc = stringResource(R.string.github_button_cd)
     val githubUrl = stringResource(R.string.github_url)
+
+    // grab the search vm
+    val progress = String.format("%.1f %%", searchEngine.ai_search.index_progress.value!! * 100)
+    val images = searchEngine.ai_search.getImagesProcessed()
 
     val uriHandler = LocalUriHandler.current
     val scope = rememberCoroutineScope()
@@ -95,36 +104,16 @@ fun SettingsAppHeader() {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+        Text(
+            text = "Images processed: $images | Progress: $progress",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(
-                onClick = {
-                    scope.launch {
-                        supportState.show()
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = .12f),
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = .12f),
-                ),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .weight(1f)
-                    .semantics {
-                        contentDescription = donateContentDesc
-                    }
-            ) {
-                Icon(painter = donateImage, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = donateTitle)
-            }
             Button(
                 onClick = { uriHandler.openUri(githubUrl) },
                 colors = ButtonDefaults.buttonColors(
@@ -153,7 +142,8 @@ fun SettingsAppHeader() {
 @Preview
 @Composable
 fun Preview() {
+    val app = Application();
     GalleryTheme {
-        SettingsAppHeader()
+        SettingsAppHeader(SearchEngine(AISearchEngine(app)))
     }
 }

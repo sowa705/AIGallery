@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Gallery</string>
+    <string name="app_name">AI Gallery</string>
     <string name="nav_albums">Albums</string>
     <string name="searchbar_title"><![CDATA[Search photos & videos]]></string>
     <string name="header_today">Today</string>
@@ -53,13 +53,13 @@
     <string name="media_location" translatable="false">@string/location_cd</string>
     <string name="location_map_cd">Location Map</string>
     <string name="app_dev">by %s</string>
-    <string name="app_dev_name">IacobIonut01</string>
+    <string name="app_dev_name">Łukasz Sowa, IacobIonut01</string>
     <string name="donate">Donate</string>
     <string name="github">Github</string>
     <string name="donate_button_cd">Donate Button</string>
     <string name="github_button_cd">Github Button</string>
     <string name="donate_url">https://www.paypal.com/paypalme/iacobionut01</string>
-    <string name="github_url">https://github.com/IacobIonut01/Gallery</string>
+    <string name="github_url">https://github.com/sowa705/AIGallery</string>
     <string name="use_as">Use as</string>
     <string name="set_as">"Set as: "</string>
     <string name="action_cancel">Cancel</string>
@@ -179,6 +179,7 @@
     <string name="permission_manage_files_title">• Manage All Files</string>
     <string name="permission_manage_files_summary">"    • Allows the app to create, modify, and delete files and albums that were previously restricted by the system. (Includes albums outside Pictures and DCIM folders and the ones from the SD Card"</string>
     <string name="allow_to_manage_files">Allow to Manage All Files</string>
+    <string name="search_by_image">Search by image</string>
     <plurals name="item_count">
         <item quantity="one">%s item</item>
         <item quantity="other">%s items</item>

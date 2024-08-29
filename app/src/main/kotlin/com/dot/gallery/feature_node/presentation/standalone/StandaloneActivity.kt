@@ -58,6 +58,7 @@ class StandaloneActivity : ComponentActivity() {
                         mediaId = viewModel.mediaId,
                         mediaState = viewModel.mediaState,
                         albumsState = MutableStateFlow(AlbumState()),
+                        mediaViewModel = null,
                         handler = viewModel.handler
                     )
                 }
